@@ -1,0 +1,18 @@
+version: '2'
+services:
+   ossec:
+    build: ./ossec
+    hostname: ossecserver1
+    links:
+     - dbserver:MYSQL
+    ports:
+     - "1515:1515"
+     - "80:80"
+    expose:
+     - "1515"
+     - "80"
+   dbserver:
+    build: ./ossec-mysql
+    hostname: dbossecserver
+    ports:
+     - "3306:3306"

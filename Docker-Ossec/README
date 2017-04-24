@@ -1,0 +1,75 @@
+##############################################################################################################################################
+                                                                 REAMDME
+##############################################################################################################################################
+
+
+Steps to install the docker and docker-compose in the machine
+
+1. Docker engine installation
+
+Update aptitude:
+bash sudo apt-get update -y
+
+Install the additional packages:
+bash sudo apt-get install -y linux-image-generic-lts-trusty linux-headers-generic-lts-trusty
+
+bash sudo apt-get update -y && sudo apt-get install -y apt-transport-https ca-certificates
+
+reboot the machine
+
+Get the new GPG key:
+bash sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+
+Open or create the file /etc/apt/sources.list.d/docker.list in your favorite text editor (you need sudo or root for this).
+deb https://apt.dockerproject.org/repo ubuntu-precise main
+
+
+Update Aptitude again:
+bash sudo apt-get update -y
+
+Verify Aptitude pulls from the right repository:
+bash sudo apt-cache policy docker-engine
+
+Add to the group
+
+bash sudo groupadd docker && sudo usermod -aG docker {{user}}
+
+
+2. Docker compose installation
+
+$ curl -L https://github.com/docker/compose/releases/download/1.7.0/docker-compose-`uname -s`-`uname -m` > ./docker-compose
+$ sudo mv ./docker-compose /usr/bin/docker-compose
+$ sudo chmod +x /usr/bin/docker-compose
+
+
+Once the docker and docker-compose is been installed , lets proceed to build the infra with one Alfaserver and two Alfaclients. Please run the below command inside the extraced zip file
+
+$ sudo docker-compose build
+
+Once the buold is done, we need to bring up the build in running using the floowing command
+
+$ sudo docker-compose up -d
+
+
+The process running will be seen as below:
+
+sreejith@ossecserver1:~/dockerfiles$ sudo docker ps -a
+CONTAINER ID        IMAGE                  COMMAND                  CREATED             STATUS              PORTS                                                                NAMES
+5b19e75af53b        dockerfiles_ossec      "/usr/bin/supervis..."   3 seconds ago       Up 3 seconds        0.0.0.0:80->80/tcp, 0.0.0.0:1515->1515/tcp, 0.0.0.0:1514->1514/udp   dockerfiles_ossec_1
+89227524ca8e        dockerfiles_dbserver   "/usr/bin/supervisord"   4 seconds ago       Up 3 seconds        0.0.0.0:3306->3306/tcp                                               dockerfiles_dbserver_1
+
+
+
+Command to attach the shell on container
+
+$ sudo docker exec -i -t {CONTAINER ID} bash
+
+Ex: sudo docker exec -i -t af5ae6e2d4ba bash
+
+To get the ip of all the running containers run the following command
+
+docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -aq)
+
+
+
+The domain set will be of the format REGIONids.domain.in where regions are usw2,sg,india and apac2. This is defined in the startup.sh script.

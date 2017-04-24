@@ -1,0 +1,27 @@
+################################################################################
+#                                  Ossec   UI                                  #
+################################################################################
+
+<VirtualHost *:80>
+        ServerAdmin dev@domain.co.in
+        ServerAlias REGIONids.domain.in
+        DocumentRoot /var/www/ossec/
+        DirectoryIndex index.php
+
+        <Directory /var/www/ossec/>
+                AuthUserFile /etc/apache2/.htpasswd_ossec
+                AuthType Basic
+                AuthName "Require Valid Users"
+                Require valid-user
+
+                Options -Indexes -FollowSymLinks -Multiviews
+                AllowOverride All
+                Order allow,deny
+                allow from all
+        </Directory>
+
+        ErrorLog "/var/log/apache2/error.log"
+        CustomLog "/var/log/apache2/access.log" combined env=!dontlog
+        #SetEnvIf UserAgent- ".*MSIE.*" nokeepalive ssl-unclean-shutdown
+</VirtualHost>
+
