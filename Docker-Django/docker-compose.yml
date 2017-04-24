@@ -1,0 +1,12 @@
+version: '2'
+services:
+   django:
+    privileged: true
+    build: ./django-app
+    hostname: django-app
+    ports:
+     - "21:21"
+     - "80:80"
+    expose:
+     - "21"
+     - "80"
