@@ -1,0 +1,3 @@
+[
+{"id":146331,"username":"sree-testuser","authentication_method":"password","last_login_at":null,"authenticate_until":null,"name":"test","email":"sreejith.p@capillarytech.com","notes":"","group_ids":"","ftp_permission":true,"sftp_permission":true,"dav_permission":true,"restapi_permission":true,"attachments_permission":false,"self_managed":true,"require_password_change":false,"allowed_ips":"","user_root":"test-sree","time_zone":"Eastern Time (US & Canada)","language":"","ssl_required":"use_system_setting","site_admin":false}
+]

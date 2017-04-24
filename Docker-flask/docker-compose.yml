@@ -1,0 +1,14 @@
+version: '2'
+services:
+   server:
+    build: ./alfaserver
+    ports:
+     - "80:80"
+   client1:
+    build: ./alfaclient
+    links:
+     - server:IP
+   client2:
+    build: ./alfaclient
+    links:
+     - server:IP

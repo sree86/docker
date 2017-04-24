@@ -1,0 +1,81 @@
+##############################################################################################################################################
+                                                                 REAMDME
+##############################################################################################################################################
+
+We have directory structured as shown below:
+
+
+gojek-task
+.
+├── alfaclient
+│p   ├── client
+│   │   └── logtailer.sh
+│   └── Dockerfile
+├── alfaserver
+│   ├── Dockerfile
+│   ├── server
+│   │   ├── server-web.py
+│   │   └── templates
+│   │       └── list.html
+│   └── sqlite
+│       └── schema.sql
+└── docker-compose.yml
+
+6 directories, 7 files
+
+
+Here we have bash script running on each client machines which will read the auth.log filtering out for successful ssh connection made pattern "Accepted publickey" or "Accepted password" and data is been pushed to the sqlite server running on the alfaserver machine via POST request. The alfaserver have python flask running to fetch the data from the table to UI. The docker is been used to automate the setup
+
+
+Steps to install the docker and docker-compose in the machine
+
+1. Docker engine installation
+
+$ sudo apt-get install apt-transport-https \
+                       software-properties-common \
+                       ca-certificates
+
+$ curl -fsSL https://yum.dockerproject.org/gpg | sudo apt-key add -
+$ apt-key fingerprint 58118E89F3A912897C070ADBF76221572C52609D
+$ sudo apt-gete update
+$ sudo apt-get -y install docker-engine
+
+
+2. Docker compose installation
+
+$ curl -L https://github.com/docker/compose/releases/download/1.7.0/docker-compose-`uname -s`-`uname -m` > ./docker-compose
+$ sudo mv ./docker-compose /usr/bin/docker-compose
+$ sudo chmod +x /usr/bin/docker-compose
+
+
+Once the docker and docker-compose is been installed , lets proceed to build the infra with one Alfaserver and two Alfaclients. Please run the below command inside the extraced zip file
+
+$ sudo docker-compose build
+
+Once the buold is done, we need to bring up the build in running using the floowing command
+
+$ sudo docker-compose up -d
+
+
+The process running will be seen as below:
+
+ubuntu@ip-10-144-251-55:~/docker/docker-sqlite$ sudo docker ps
+CONTAINER ID        IMAGE                  COMMAND                  CREATED             STATUS              PORTS                NAMES
+af5ae6e2d4ba        dockersqlite_client1   "/bin/bash logtail..."   31 minutes ago      Up 12 seconds                            dockersqlite_client1_1
+7cb25e301dfb        dockersqlite_client2   "/bin/bash logtail..."   31 minutes ago      Up 12 seconds                            dockersqlite_client2_1
+ec5b0b23eca1        dockersqlite_server    "python server-web.py"   59 minutes ago      Up 13 seconds       0.0.0.0:80->80/tcp   dockersqlite_server_1
+
+
+Command to attach the shell on container
+
+$ sudo docker exec -i -t {CONTAINER ID} bash
+
+Ex: sudo docker exec -i -t af5ae6e2d4ba bash
+
+To get the ip of all the running containers run the following command
+
+docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -aq)
+
+
+NOTE: Each client has a 'test' ssh user with password '123'
+
